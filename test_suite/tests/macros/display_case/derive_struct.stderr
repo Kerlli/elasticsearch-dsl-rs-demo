@@ -1,0 +1,9 @@
+error: DisplayCase can only be used with enums
+ --> tests/macros/display_case/derive_struct.rs:4:1
+  |
+4 | / #[display_case(case = "lowercase")]
+5 | | struct Test {
+6 | |     foo: String,
+7 | |     bar: i32,
+8 | | }
+  | |_^

@@ -1,0 +1,11 @@
+[package]
+name = "test_suite"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dev-dependencies]
+dsl = { path = "../dsl" }
+macros = { path = "../macros" }
+trybuild = "1.0.89"

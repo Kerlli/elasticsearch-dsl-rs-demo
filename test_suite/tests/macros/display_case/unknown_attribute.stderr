@@ -1,0 +1,5 @@
+error: Expected 'case'
+ --> tests/macros/display_case/unknown_attribute.rs:4:16
+  |
+4 | #[display_case(foo = "lowercase")]
+  |                ^^^

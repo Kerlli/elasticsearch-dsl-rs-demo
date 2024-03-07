@@ -1,0 +1,5 @@
+error: Parse case error: unknown "case" value
+ --> tests/macros/display_case/unknown_attribute_val.rs:4:23
+  |
+4 | #[display_case(case = "foocase")]
+  |                       ^^^^^^^^^
