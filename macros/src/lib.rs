@@ -4,11 +4,43 @@ mod helpers;
 use proc_macro::TokenStream;
 use quote::quote;
 use syn::{
-    parse::{Parse, ParseStream}, parse_macro_input, token::Eq, Attribute, Data, DataEnum, DeriveInput, Error, Ident, LitStr, Variant
+    parse::{Parse, ParseStream},
+    parse_macro_input,
+    token::Eq,
+    Attribute,
+    Data,
+    DataEnum,
+    DeriveInput,
+    Error,
+    Ident,
+    LitStr,
+    Variant,
 };
 use case::Case;
-// use helpers::snakecase;
 
+/// The `DisplayCase` macro automatically implements the `std::fmt::Display` trait
+/// for enum types, using specified case formatting for each variant.
+/// 
+/// # Attributes
+/// This macro supports the following attribute:
+/// 
+/// - `#[display_case(case = "snakecase")]`: Specifies the case conversion for the
+/// enum variants. Supported values are `"lowercase"`, `"uppercase"`, and `"snakecase"`.
+/// 
+/// # Examples
+/// 
+/// ```
+/// use macros::DisplayCase;
+/// 
+/// #[derive(DisplayCase)]
+/// #[display_case(case = "snakecase")]
+/// enum MyEnum {
+///     FirstVariant,
+///     SecondVariant,
+/// }
+/// ```
+/// 
+/// Using the above definition, `MyEnum::FirstVariant` will be displayed as "first_variant".
 #[proc_macro_derive(DisplayCase, attributes(display_case))]
 pub fn derive_display_case(input: TokenStream) -> TokenStream {
     // Parse to syntax tree
