@@ -9,7 +9,7 @@ use super::{
 #[derive(Serialize)]
 pub struct Search<'a> {
     query: Option<&'a Query<'a>>,
-    sort: Option<Vec<SortClause>>,
+    sort: Option<Vec<SortClause<'a>>>,
 }
 
 impl<'a> Search<'a> {
@@ -26,7 +26,7 @@ impl<'a> Search<'a> {
         self
     }
 
-    pub fn sort(&mut self, sort: Vec<SortClause>) -> &mut Self {
+    pub fn sort(&mut self, sort: Vec<SortClause<'a>>) -> &mut Self {
         self.sort = Some(sort);
 
         self

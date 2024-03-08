@@ -1,21 +1,21 @@
-use super::{
-    field::Field,
-    QueryValue
-};
-
 use std::collections::HashMap;
 use macros::DisplayCase;
 use serde::Serialize;
 use serde_with::SerializeDisplay;
 
+use super::{
+    field::Field,
+    QueryValue,
+};
+
 #[derive(Serialize)]
-pub struct Match {
+pub struct Match<'a> {
     #[serde(flatten)]
-    inner: HashMap<Field, Inner>,
+    inner: HashMap<Field<'a>, Inner>,
 }
 
-impl Match {
-    pub fn new(field: &str, value: QueryValue) -> Self {
+impl<'a> Match<'a> {
+    pub fn new(field: &'a str, value: QueryValue) -> Self {
         Self {
             inner: HashMap::from([
                 (field.into(), Inner {

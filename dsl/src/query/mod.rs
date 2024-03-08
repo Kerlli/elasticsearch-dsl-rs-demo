@@ -55,9 +55,9 @@ impl Serialize for QueryValue {
 #[derive(Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum LeafClause<'a> {
-    Match(Match),
+    Match(Match<'a>),
     Term,
-    Range(&'a Range),
+    Range(&'a Range<'a>),
 }
 
 

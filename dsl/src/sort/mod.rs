@@ -1,3 +1,4 @@
+use std::borrow::Cow;
 use serde::{
     Serialize,
     Serializer,
@@ -7,21 +8,21 @@ use serde_with::{SerializeDisplay, skip_serializing_none};
 use macros::DisplayCase;
 
 #[derive(Clone)]
-pub struct SortClause {
-    field: String,
-    opts: SortOptions,
+pub struct SortClause<'a> {
+    field: Cow<'a, str>,
+    opts: SortOptions<'a>,
 }
 
-impl SortClause {
-    pub fn new(field: &str) -> Self {
+impl<'a> SortClause<'a> {
+    pub fn new(field: &'a str) -> Self {
         Self {
-            field: field.to_string(),
+            field: field.into(),
             opts: Default::default(),
         }
     }
 
-    pub fn format(&mut self, format: &str) -> &mut Self {
-        self.opts.format = Some(format.to_string());
+    pub fn format(&mut self, format: &'a str) -> &mut Self {
+        self.opts.format = Some(format.into());
 
         self
     }
@@ -45,7 +46,7 @@ impl SortClause {
     }
 }
 
-impl Serialize for SortClause {
+impl<'a> Serialize for SortClause<'a> {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -58,15 +59,15 @@ impl Serialize for SortClause {
 
 #[skip_serializing_none]
 #[derive(Clone, Serialize)]
-struct SortOptions {
-    format: Option<String>,
+struct SortOptions<'a> {
+    format: Option<Cow<'a, str>>,
     order: Option<Order>,
     mode: Option<Mode>,
     numberic_type: Option<NumbericType>,
     // nested,
 }
 
-impl Default for SortOptions {
+impl<'a> Default for SortOptions<'a> {
     fn default() -> Self {
         Self {
             format: None,

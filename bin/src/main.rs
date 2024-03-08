@@ -68,7 +68,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                             )
                             .filter(
                                 range_clause!(
-                                    Range::new("@timestamp")
+                                    Range::new("@timestamp".into())
                                         .gte(RangeValue::Date("now-1h/H".to_owned()))
                                         .lte(RangeValue::Date("now/H".to_owned()))
                                         .format("HH:mm:ss yyyy/MM/DD")

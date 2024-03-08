@@ -1,14 +1,16 @@
+use std::borrow::Cow;
 use serde::{Serialize, Serializer, ser::SerializeMap};
 use serde_with::{skip_serializing_none, SerializeDisplay};
 use macros::DisplayCase;
 use crate::types::number::Number;
+use super::field::Field;
 
-pub struct Range {
-    field: String,
-    opts: Options,
+pub struct Range<'a> {
+    field: Field<'a>,
+    opts: Options<'a>,
 }
 
-impl Serialize for Range {
+impl<'a> Serialize for Range<'a> {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -19,10 +21,10 @@ impl Serialize for Range {
     }
 }
 
-impl Range {
-    pub fn new(field: &str) -> Self {
+impl<'a> Range<'a> {
+    pub fn new(field: Field<'a>) -> Self {
         Self {
-            field: field.to_string(),
+            field,
             opts: Default::default(),
         }
     }
@@ -51,8 +53,8 @@ impl Range {
         self
     }
 
-    pub fn format(&mut self, v: &str) -> &mut Self {
-        self.opts.format = Some(v.to_string());
+    pub fn format(&mut self, v: &'a str) -> &mut Self {
+        self.opts.format = Some(v.into());
 
         self
     }
@@ -63,8 +65,8 @@ impl Range {
         self
     }
 
-    pub fn time_zone(&mut self, v: &str) -> &mut Self {
-        self.opts.time_zone = Some(v.to_string());
+    pub fn time_zone(&mut self, v: &'a str) -> &mut Self {
+        self.opts.time_zone = Some(v.into());
 
         self
     }
@@ -78,20 +80,20 @@ impl Range {
 
 #[skip_serializing_none]
 #[derive(Serialize)]
-struct Options {
+struct Options<'a> {
     gt: Option<RangeValue>,
     gte: Option<RangeValue>,
     lt: Option<RangeValue>,
     lte: Option<RangeValue>,
-    format: Option<String>,
+    format: Option<Cow<'a, str>>,
     #[serde(skip_serializing_if = "Relation::is_default")]
     relation: Relation,
-    time_zone: Option<String>,
+    time_zone: Option<Cow<'a, str>>,
     #[serde(skip_serializing_if = "Boost::is_default")]
     boost: Boost,
 }
 
-impl Default for Options {
+impl<'a> Default for Options<'a> {
     fn default() -> Self {
         Self {
             gt: None,

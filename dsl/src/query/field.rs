@@ -1,10 +1,11 @@
+use std::borrow::Cow;
 use serde::Serialize;
 
-#[derive(PartialEq ,Eq, Hash, Serialize)]
-pub struct Field(String);
+#[derive(Clone, PartialEq ,Eq, Hash, Serialize)]
+pub struct Field<'a>(Cow<'a, str>);
 
-impl From<&str> for Field {
-    fn from(s: &str) -> Self {
-        Self(s.to_string())
+impl<'a> From<&'a str> for Field<'a> {
+    fn from(s: &'a str) -> Self {
+        Self(s.into())
     }
 }
