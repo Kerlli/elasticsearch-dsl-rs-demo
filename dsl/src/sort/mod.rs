@@ -154,16 +154,18 @@ macro_rules! sort {
 /// Example
 /// ```
 /// use dsl::search::Search;
-/// use dsl::sort::{Order, Mode};
+/// use dsl::sort::{Order, Mode, Sort, SortClause};
 /// use dsl::{sort, sort_clause};
 /// 
 /// let search = Search::new()
 ///     .sort(
-///         sort!(
-///             sort_clause!("foo", order = Order::Asc, mode = Mode::Min),
-///             sort_clause!("bar")
+///         Sort::new(
+///             sort!(
+///                 sort_clause!("foo", order = Order::Asc, mode = Mode::Min),
+///                 sort_clause!("bar")
+///             )
 ///         )
-///     )
+///     );
 /// ```
 #[macro_export]
 macro_rules! sort_clause {
