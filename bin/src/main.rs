@@ -11,7 +11,7 @@ use elasticsearch::{
 use serde::Deserialize;
 use serde_json::Value;
 use dsl::{
-    sort::{Sort, SortClause, Order},
+    sort::{SortClause, Order},
     search::Search,
     query::{
         bool::Bool,
@@ -77,10 +77,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     )
             )
             .sort(
-                Sort::new(
-                    sort!(
-                        sort_clause!("@timestamp", order = Order::Desc)
-                    )
+                sort!(
+                    sort_clause!("@timestamp", order = Order::Desc)
                 )
             )
             .build();

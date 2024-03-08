@@ -2,14 +2,14 @@ use serde::Serialize;
 use serde_with::skip_serializing_none;
 use super::{
     query::Query,
-    sort::Sort,
+    sort::SortClause,
 };
 
 #[skip_serializing_none]
 #[derive(Serialize)]
 pub struct Search<'a> {
     query: Option<&'a Query<'a>>,
-    sort: Option<Sort>,
+    sort: Option<Vec<SortClause>>,
 }
 
 impl<'a> Search<'a> {
@@ -26,7 +26,7 @@ impl<'a> Search<'a> {
         self
     }
 
-    pub fn sort(&mut self, sort: Sort) -> &mut Self {
+    pub fn sort(&mut self, sort: Vec<SortClause>) -> &mut Self {
         self.sort = Some(sort);
 
         self

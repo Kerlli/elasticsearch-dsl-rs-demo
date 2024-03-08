@@ -1,38 +1,10 @@
 use serde::{
     Serialize,
     Serializer,
-    ser::{
-        SerializeMap,
-        SerializeSeq,
-    }
+    ser::SerializeMap,
 };
 use serde_with::{SerializeDisplay, skip_serializing_none};
 use macros::DisplayCase;
-
-pub struct Sort {
-    sorts: Vec<SortClause>,
-}
-
-impl Serialize for Sort {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        let mut seq = serializer.serialize_seq(Some(self.sorts.len()))?;
-        for s in self.sorts.iter() {
-            seq.serialize_element(s)?;
-        }
-        seq.end()
-    }
-}
-
-impl Sort {
-    pub fn new(sort_clauses: Vec<SortClause>) -> Self {
-        Self {
-            sorts: sort_clauses,
-        }
-    }
-}
 
 #[derive(Clone)]
 pub struct SortClause {
@@ -154,16 +126,14 @@ macro_rules! sort {
 /// Example
 /// ```
 /// use dsl::search::Search;
-/// use dsl::sort::{Order, Mode, Sort, SortClause};
+/// use dsl::sort::{Order, Mode, SortClause};
 /// use dsl::{sort, sort_clause};
 /// 
 /// let search = Search::new()
 ///     .sort(
-///         Sort::new(
-///             sort!(
-///                 sort_clause!("foo", order = Order::Asc, mode = Mode::Min),
-///                 sort_clause!("bar")
-///             )
+///         sort!(
+///             sort_clause!("foo", order = Order::Asc, mode = Mode::Min),
+///             sort_clause!("bar")
 ///         )
 ///     );
 /// ```
