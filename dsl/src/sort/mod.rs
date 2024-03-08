@@ -112,6 +112,8 @@ pub enum NumbericType {
 macro_rules! sort {
     ($($clause:expr),*) => {
         {
+            use $crate::sort::SortClause;
+
             let mut clauses: Vec<SortClause> = vec![];
 
             $(
@@ -142,11 +144,17 @@ macro_rules! sort {
 #[macro_export]
 macro_rules! sort_clause {
     ($field:expr) => {
-        SortClause::new($field)
+        {
+            use $crate::sort::SortClause;
+
+            SortClause::new($field)
+        }
     };
 
     ($field:expr $(, $key:ident = $value:expr)*) => {
         {
+            use $crate::sort::SortClause;
+
             SortClause::new($field)
                 $(.$key($value))*
         }

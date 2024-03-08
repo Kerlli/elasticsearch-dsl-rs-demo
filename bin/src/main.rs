@@ -11,7 +11,7 @@ use elasticsearch::{
 use serde::Deserialize;
 use serde_json::Value;
 use dsl::{
-    sort::{SortClause, Order},
+    sort::Order,
     search::Search,
     query::{
         bool::Bool,
