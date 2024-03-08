@@ -135,7 +135,7 @@ pub enum NumbericType {
 }
 
 #[macro_export]
-macro_rules! sort_clause {
+macro_rules! sort {
     ($($clause:expr),*) => {
         {
             let mut clauses: Vec<SortClause> = vec![];
@@ -145,6 +145,36 @@ macro_rules! sort_clause {
             )*
 
             clauses
+        }
+    };
+}
+
+/// Create a sort clause like Python `**kwargs` function
+/// 
+/// Example
+/// ```
+/// use dsl::search::Search;
+/// use dsl::sort::{Order, Mode};
+/// use dsl::{sort, sort_clause};
+/// 
+/// let search = Search::new()
+///     .sort(
+///         sort!(
+///             sort_clause!("foo", order = Order::Asc, mode = Mode::Min),
+///             sort_clause!("bar")
+///         )
+///     )
+/// ```
+#[macro_export]
+macro_rules! sort_clause {
+    ($field:expr) => {
+        SortClause::new($field)
+    };
+
+    ($field:expr $(, $key:ident = $value:expr)*) => {
+        {
+            SortClause::new($field)
+                $(.$key($value))*
         }
     };
 }

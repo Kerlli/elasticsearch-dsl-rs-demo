@@ -26,6 +26,7 @@ use dsl::{
     match_clause,
     range_clause,
     sort_clause,
+    sort,
 };
 
 #[tokio::main]
@@ -77,9 +78,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             )
             .sort(
                 Sort::new(
-                    sort_clause!(
-                        SortClause::new("@timestamp")
-                            .order(Order::Desc)
+                    sort!(
+                        sort_clause!("@timestamp", order = Order::Desc)
                     )
                 )
             )
