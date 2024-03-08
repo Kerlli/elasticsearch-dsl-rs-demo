@@ -6,10 +6,11 @@ use serde::{
 };
 use serde_with::{SerializeDisplay, skip_serializing_none};
 use macros::DisplayCase;
+use crate::field::Field;
 
 #[derive(Clone)]
 pub struct SortClause<'a> {
-    field: Cow<'a, str>,
+    field: Field<'a>,
     opts: SortOptions<'a>,
 }
 

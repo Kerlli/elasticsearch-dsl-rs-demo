@@ -2,11 +2,9 @@ use std::collections::HashMap;
 use macros::DisplayCase;
 use serde::Serialize;
 use serde_with::SerializeDisplay;
+use crate::field::Field;
 
-use super::{
-    field::Field,
-    QueryValue,
-};
+use super::QueryValue;
 
 #[derive(Serialize)]
 pub struct Match<'a> {

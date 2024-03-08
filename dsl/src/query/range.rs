@@ -2,8 +2,10 @@ use std::borrow::Cow;
 use serde::{Serialize, Serializer, ser::SerializeMap};
 use serde_with::{skip_serializing_none, SerializeDisplay};
 use macros::DisplayCase;
-use crate::types::number::Number;
-use super::field::Field;
+use crate::{
+    field::Field,
+    types::number::Number,
+};
 
 pub struct Range<'a> {
     field: Field<'a>,

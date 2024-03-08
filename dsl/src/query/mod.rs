@@ -1,8 +1,6 @@
 pub mod bool;
 pub mod r#match;
 pub mod range;
-pub mod field;
-
 use serde::{Serialize, Serializer};
 use bool::Bool;
 use serde_with::skip_serializing_none;
