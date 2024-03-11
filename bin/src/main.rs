@@ -11,20 +11,17 @@ use elasticsearch::{
 use serde::Deserialize;
 use serde_json::Value;
 use dsl::{
-    sort::Order,
-    search::Search,
+    match_clause,
     query::{
         bool::Bool,
         r#match::Match,
+        range::RangeValue,
         Query,
-        QueryValue,
-        range::{
-            Range,
-            RangeValue,
-        },
+        QueryValue
     },
-    match_clause,
-    range_clause,
+    range,
+    search::Search,
+    sort::Order,
     sort_clause,
     sort,
 };
@@ -67,11 +64,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                                 )
                             )
                             .filter(
-                                range_clause!(
-                                    Range::new("@timestamp".into())
-                                        .gte(RangeValue::Date("now-1h/H".to_owned()))
-                                        .lte(RangeValue::Date("now/H".to_owned()))
-                                        .format("HH:mm:ss yyyy/MM/DD")
+                                range!(
+                                    "@timestamp",
+                                    gte = RangeValue::Date("now-1h/H".to_owned()),
+                                    lte = RangeValue::Date("now/H".to_owned()),
+                                    format = "HH:mm:ss yyyy/MM/DD"
                                 )
                             )
                     )

@@ -167,4 +167,32 @@ impl Serialize for Boost {
     }
 }
 
+#[macro_export]
+macro_rules! range {
+    ($field:expr) => {
+        {
+            use $crate::query::{
+                LeafClause,
+                range::Range,
+            };
 
+            LeafClause::Range(
+                &Range::new($field.into())
+            )
+        }
+    };
+
+    ($field:expr $(, $key:ident = $value:expr)*) => {
+        {
+            use $crate::query::{
+                LeafClause,
+                range::Range,
+            };
+
+            LeafClause::Range(
+                Range::new($field.into())
+                $(.$key($value))*
+            )
+        }
+    };
+}

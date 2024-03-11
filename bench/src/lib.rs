@@ -1,18 +1,15 @@
 use dsl::{
-    sort::{SortClause, Order},
+    sort::Order,
     search::Search,
     query::{
         bool::Bool,
         r#match::Match,
         Query,
         QueryValue,
-        range::{
-            Range,
-            RangeValue,
-        },
+        range::RangeValue,
     },
     match_clause,
-    range_clause,
+    range,
     sort_clause,
     sort,
 };
@@ -31,11 +28,11 @@ pub fn benchtest(n: usize) {
                                 )
                             )
                             .filter(
-                                range_clause!(
-                                    Range::new("@timestamp".into())
-                                        .gte(RangeValue::Date("now-1h/H".to_owned()))
-                                        .lte(RangeValue::Date("now/H".to_owned()))
-                                        .format("HH:mm:ss yyyy/MM/DD")
+                                range!(
+                                    "@timestamp",
+                                    gte = RangeValue::Date("now-1h/H".to_owned()),
+                                    lte = RangeValue::Date("now/H".to_owned()),
+                                    format = "HH:mm:ss yyyy/MM/DD"
                                 )
                             )
                     )
