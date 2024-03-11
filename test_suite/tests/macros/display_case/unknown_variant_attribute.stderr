@@ -1,0 +1,5 @@
+error: Expected 'display_as'
+ --> tests/macros/display_case/unknown_variant_attribute.rs:7:20
+  |
+7 |     #[display_case(bar = "bar")]
+  |                    ^^^

@@ -1,12 +1,14 @@
 mod case;
 mod helpers;
 
+use std::collections::HashMap;
 use proc_macro::TokenStream;
 use quote::quote;
 use syn::{
     parse::{Parse, ParseStream},
     parse_macro_input,
-    token::Eq,
+    punctuated::Punctuated,
+    token::{Comma, Eq},
     Attribute,
     Data,
     DataEnum,
@@ -36,11 +38,13 @@ use case::Case;
 /// #[display_case(case = "snakecase")]
 /// enum MyEnum {
 ///     FirstVariant,
+///     #[display_case(display_as = "second")] // custom display value
 ///     SecondVariant,
 /// }
-/// ```
 /// 
-/// Using the above definition, `MyEnum::FirstVariant` will be displayed as "first_variant".
+/// assert_eq!(&MyEnum::FirstVariant.to_string(), "first_variant");
+/// assert_eq!(&MyEnum::SecondVariant.to_string(), "second");
+/// ```
 #[proc_macro_derive(DisplayCase, attributes(display_case))]
 pub fn derive_display_case(input: TokenStream) -> TokenStream {
     // Parse to syntax tree
@@ -58,13 +62,26 @@ pub fn derive_display_case(input: TokenStream) -> TokenStream {
         Err(e) => return TokenStream::from(e.to_compile_error())
     };
 
-    let arms = variants.iter().map(|Variant {ident, ..}| {
-        let variant_name = case.parse_str(&ident.to_string());
+    let pairs = match parse_variant_attribute(&variants) {
+        Ok(pairs) => pairs,
+        Err(e) => return TokenStream::from(e.to_compile_error())
+    };
 
-        quote! {
-            #name::#ident => write!(f, "{}", #variant_name),
-        }
-    });
+    let arms = variants.iter()
+        .map(|Variant { ident, .. }| {
+            match pairs.get(&ident) {
+                Some(display_as) => quote! {
+                    #name::#ident => write!(f, "{}", #display_as),
+                },
+                None => {
+                    let display_val = case.parse_str(&ident.to_string());
+
+                    quote! {
+                        #name::#ident => write!(f, "{}", #display_val),
+                    }
+                }
+            }
+        });
 
     // Build the output
     let expanded = quote! {
@@ -106,6 +123,37 @@ fn parse_case_attribute(attrs: &[Attribute]) -> syn::Result<Case> {
         }
     }
     Err(Error::new_spanned(&attrs[0], "Attribute `display_case` not found on enum"))
+}
+
+struct DisplayCaseVariantAttr {
+    value: LitStr,
+}
+
+impl Parse for DisplayCaseVariantAttr {
+    fn parse(input: ParseStream) -> syn::Result<Self> {
+        let as_ident: Ident = input.parse()?;
+        if as_ident != "display_as" {
+            return Err(syn::Error::new(as_ident.span(), "Expected 'display_as'"));
+        }
+        let _: Eq = input.parse()?;
+        let value: LitStr = input.parse()?;
+        Ok(DisplayCaseVariantAttr { value })
+    }
+}
+
+fn parse_variant_attribute(variants: &Punctuated<Variant, Comma>) -> syn::Result<HashMap<Ident, String>> {
+    let mut pairs: HashMap<Ident, String> = HashMap::new();
+
+    for variant in variants.iter().filter(|variant| !variant.attrs.is_empty()) {
+        for attr in &variant.attrs {
+            if attr.path().is_ident("display_case") {
+                let parsed_attr = attr.parse_args::<DisplayCaseVariantAttr>()?;
+                pairs.insert(variant.ident.clone(), parsed_attr.value.value());
+            }
+        }
+    }
+
+    Ok(pairs)
 }
 
 
