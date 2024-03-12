@@ -1,4 +1,5 @@
 pub mod field;
+pub mod leaf_clause;
 pub mod query;
 pub mod sort;
 pub mod types;

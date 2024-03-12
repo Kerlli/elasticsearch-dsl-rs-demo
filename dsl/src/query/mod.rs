@@ -1,11 +1,10 @@
 pub mod bool;
+pub mod exists;
 pub mod r#match;
 pub mod range;
 use serde::{Serialize, Serializer};
 use bool::Bool;
 use serde_with::skip_serializing_none;
-use range::Range;
-use r#match::Match;
 use crate::types::number::Number;
 
 #[skip_serializing_none]
@@ -50,14 +49,6 @@ impl Serialize for QueryValue {
     }
 }
 
-#[allow(dead_code)]
-#[derive(Serialize)]
-#[serde(rename_all = "snake_case")]
-pub enum LeafClause<'a> {
-    Match(Match<'a>),
-    Term,
-    Range(&'a Range<'a>),
-}
 
 
 

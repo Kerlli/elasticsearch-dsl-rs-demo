@@ -1,4 +1,4 @@
-use super::LeafClause;
+use crate::leaf_clause::LeafClause;
 use serde::Serialize;
 use serde_with::skip_serializing_none;
 

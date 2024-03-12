@@ -32,10 +32,8 @@
 macro_rules! match_clause {
     ($field:expr, $value:expr) => {
         {
-            use $crate::query::{
-                LeafClause,
-                r#match::Match,
-            };
+            use $crate::leaf_clause::LeafClause;
+            use $crate::query::r#match::Match;
 
             LeafClause::Match(
                 Match::new($field.into(), $value)
@@ -45,10 +43,8 @@ macro_rules! match_clause {
 
     ($field:expr, $value:expr $(, $k:ident = $v:expr)*) => {
         {
-            use $crate::query::{
-                LeafClause,
-                r#match::Match,
-            };
+            use $crate::leaf_clause::LeafClause;
+            use $crate::query::r#match::Match;
     
             LeafClause::Match(
                 Match::new($field.into(), $value)
@@ -63,10 +59,8 @@ macro_rules! match_clause {
 macro_rules! range_clause {
     ($field:expr) => {
         {
-            use $crate::query::{
-                LeafClause,
-                range::Range,
-            };
+            use $crate::leaf_clause::LeafClause;
+            use $crate::query::range::Range;
 
             LeafClause::Range(
                 &Range::new($field.into())
@@ -76,10 +70,8 @@ macro_rules! range_clause {
 
     ($field:expr $(, $key:ident = $value:expr)*) => {
         {
-            use $crate::query::{
-                LeafClause,
-                range::Range,
-            };
+            use $crate::leaf_clause::LeafClause;
+            use $crate::query::range::Range;
 
             LeafClause::Range(
                 Range::new($field.into())
