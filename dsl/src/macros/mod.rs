@@ -1,3 +1,33 @@
+/// Create a match clause like Python `**kwargs` function
+/// 
+/// # Example
+/// ```
+/// use dsl::{
+///     match_clause,
+///     query::{
+///         bool::Bool,
+///         Query,
+///         QueryValue
+///     },
+///     search::Search,
+/// };
+/// 
+/// let search = Search::new()
+///     .query(
+///         Query::new()
+///             .bool(
+///                 Bool::new()
+///                     .must(
+///                         match_clause!(
+///                             "event.action",
+///                             QueryValue::Text("logged-in".to_owned()),
+///                             prefix_length = 3
+///                         )
+///                     )
+///             )
+///     )
+///     .build();
+/// ```
 #[macro_export]
 macro_rules! match_clause {
     ($field:expr, $value:expr) => {
@@ -78,7 +108,7 @@ macro_rules! sort {
 
 /// Create a sort clause like Python `**kwargs` function
 /// 
-/// Example
+/// # Example
 /// ```
 /// use dsl::search::Search;
 /// use dsl::sort::{Order, Mode, SortClause};
