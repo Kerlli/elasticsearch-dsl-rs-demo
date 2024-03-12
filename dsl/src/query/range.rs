@@ -4,7 +4,10 @@ use serde_with::{skip_serializing_none, SerializeDisplay};
 use macros::DisplayCase;
 use crate::{
     field::Field,
-    types::number::Number,
+    types::{
+        number::Number,
+        EqualsToDefault,
+    },
 };
 
 pub struct Range<'a> {
@@ -88,10 +91,10 @@ struct RangeOptions<'a> {
     lt: Option<RangeValue>,
     lte: Option<RangeValue>,
     format: Option<Cow<'a, str>>,
-    #[serde(skip_serializing_if = "Relation::is_default")]
+    #[serde(skip_serializing_if = "Relation::equals_to_default")]
     relation: Relation,
     time_zone: Option<Cow<'a, str>>,
-    #[serde(skip_serializing_if = "Boost::is_default")]
+    #[serde(skip_serializing_if = "Boost::equals_to_default")]
     boost: Boost,
 }
 
@@ -105,7 +108,7 @@ impl<'a> Default for RangeOptions<'a> {
             format: None,
             relation: Default::default(),
             time_zone: None,
-            boost: Boost(1.0),
+            boost: Default::default(),
         }
     }
 }
@@ -129,18 +132,12 @@ impl Serialize for RangeValue {
 }
 
 #[allow(dead_code)]
-#[derive(Debug, DisplayCase, SerializeDisplay, PartialEq, Eq)]
+#[derive(Debug, DisplayCase, SerializeDisplay, PartialEq)]
 #[display_case(case = "uppercase")]
 pub enum Relation {
     Intersects,
     Contains,
     Within,
-}
-
-impl Relation {
-    fn is_default(&self) -> bool {
-        self == &Default::default()
-    }
 }
 
 impl Default for Relation {
@@ -149,14 +146,18 @@ impl Default for Relation {
     }
 }
 
+impl EqualsToDefault for Relation {}
+
 #[derive(PartialEq)]
 struct Boost(f32);
 
-impl Boost {
-    fn is_default(&self) -> bool {
-        self.0 == 1.0
+impl Default for Boost {
+    fn default() -> Self {
+        Self(1.0)
     }
 }
+
+impl EqualsToDefault for Boost {}
 
 impl Serialize for Boost {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>

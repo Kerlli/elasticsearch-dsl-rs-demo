@@ -2,7 +2,10 @@ use std::borrow::Cow;
 use macros::DisplayCase;
 use serde::{Serialize, Serializer, ser::SerializeMap};
 use serde_with::{skip_serializing_none, SerializeDisplay};
-use crate::field::Field;
+use crate::{
+    field::Field,
+    types::EqualsToDefault,
+};
 
 use super::QueryValue;
 
@@ -104,7 +107,7 @@ impl<'a> Serialize for Match<'a> {
 #[derive(Clone, Serialize)]
 struct Inner<'a> {
     query: QueryValue,
-    #[serde(flatten, skip_serializing_if = "MatchOptions::is_default")]
+    #[serde(flatten, skip_serializing_if = "MatchOptions::equals_to_default")]
     opts: MatchOptions<'a>,
 }
 
@@ -112,27 +115,21 @@ struct Inner<'a> {
 #[derive(Clone, PartialEq, Serialize)]
 struct MatchOptions<'a> {
     analyzer: Option<Cow<'a, str>>,
-    #[serde(skip_serializing_if = "AutoGenerateSynonymsPhraseQuery::is_default")]
+    #[serde(skip_serializing_if = "AutoGenerateSynonymsPhraseQuery::equals_to_default")]
     auto_generate_synonyms_phrase_query: AutoGenerateSynonymsPhraseQuery,
     fuzziness: Option<Cow<'a, str>>,
-    #[serde(skip_serializing_if = "MaxExpansions::is_default")]
+    #[serde(skip_serializing_if = "MaxExpansions::equals_to_default")]
     max_expansions: MaxExpansions,
-    #[serde(skip_serializing_if = "PrefixLength::is_default")]
+    #[serde(skip_serializing_if = "PrefixLength::equals_to_default")]
     prefix_length: PrefixLength,
-    #[serde(skip_serializing_if = "FuzzyTranspositions::is_default")]
+    #[serde(skip_serializing_if = "FuzzyTranspositions::equals_to_default")]
     fuzzy_transpositions: FuzzyTranspositions,
     fuzzy_rewrite: Option<Cow<'a, str>>,
-    #[serde(skip_serializing_if = "Lenient::is_default")]
+    #[serde(skip_serializing_if = "Lenient::equals_to_default")]
     lenient: Lenient,
     operator: Option<Operator>,
     minimum_should_match: Option<Cow<'a, str>>,
     zero_terms_query: Option<ZeroTermsQuery>,
-}
-
-impl<'a> MatchOptions<'a> {
-    fn is_default(&self) -> bool {
-        *self == Self::default()
-    }
 }
 
 impl<'a> Default for MatchOptions<'a> {
@@ -153,14 +150,10 @@ impl<'a> Default for MatchOptions<'a> {
     }
 }
 
+impl<'a> EqualsToDefault for MatchOptions<'a> {}
+
 #[derive(Clone, PartialEq, Serialize)]
 struct AutoGenerateSynonymsPhraseQuery(bool);
-
-impl AutoGenerateSynonymsPhraseQuery {
-    fn is_default(&self) -> bool {
-        *self == Self::default()
-    }
-}
 
 impl Default for AutoGenerateSynonymsPhraseQuery {
     fn default() -> Self {
@@ -168,14 +161,10 @@ impl Default for AutoGenerateSynonymsPhraseQuery {
     }
 }
 
+impl EqualsToDefault for AutoGenerateSynonymsPhraseQuery {}
+
 #[derive(Clone, PartialEq, Serialize)]
 struct MaxExpansions(i32);
-
-impl MaxExpansions {
-    fn is_default(&self) -> bool {
-        *self == Self::default()
-    }
-}
 
 impl Default for MaxExpansions {
     fn default() -> Self {
@@ -183,14 +172,10 @@ impl Default for MaxExpansions {
     }
 }
 
+impl EqualsToDefault for MaxExpansions {}
+
 #[derive(Clone, PartialEq, Serialize)]
 struct PrefixLength(i32);
-
-impl PrefixLength {
-    fn is_default(&self) -> bool {
-        *self == Self::default()
-    }
-}
 
 impl Default for PrefixLength {
     fn default() -> Self {
@@ -198,14 +183,10 @@ impl Default for PrefixLength {
     }
 }
 
+impl EqualsToDefault for PrefixLength {}
+
 #[derive(Clone, PartialEq, Serialize)]
 struct FuzzyTranspositions(bool);
-
-impl FuzzyTranspositions {
-    fn is_default(&self) -> bool {
-        *self == Self::default()
-    }
-}
 
 impl Default for FuzzyTranspositions {
     fn default() -> Self {
@@ -213,20 +194,18 @@ impl Default for FuzzyTranspositions {
     }
 }
 
+impl EqualsToDefault for FuzzyTranspositions {}
+
 #[derive(Clone, PartialEq, Serialize)]
 struct Lenient(bool);
-
-impl Lenient {
-    fn is_default(&self) -> bool {
-        *self == Self::default()
-    }
-}
 
 impl Default for Lenient {
     fn default() -> Self {
         Self(false)
     }
 }
+
+impl EqualsToDefault for Lenient {}
 
 #[allow(dead_code)]
 #[derive(Clone, DisplayCase, PartialEq, SerializeDisplay)]
