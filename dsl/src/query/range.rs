@@ -9,7 +9,7 @@ use crate::{
 
 pub struct Range<'a> {
     field: Field<'a>,
-    opts: Options<'a>,
+    opts: RangeOptions<'a>,
 }
 
 impl<'a> Serialize for Range<'a> {
@@ -82,7 +82,7 @@ impl<'a> Range<'a> {
 
 #[skip_serializing_none]
 #[derive(Serialize)]
-struct Options<'a> {
+struct RangeOptions<'a> {
     gt: Option<RangeValue>,
     gte: Option<RangeValue>,
     lt: Option<RangeValue>,
@@ -95,7 +95,7 @@ struct Options<'a> {
     boost: Boost,
 }
 
-impl<'a> Default for Options<'a> {
+impl<'a> Default for RangeOptions<'a> {
     fn default() -> Self {
         Self {
             gt: None,
