@@ -36,7 +36,7 @@ macro_rules! match_clause {
             use $crate::query::r#match::Match;
 
             LeafClause::Match(
-                Match::new($field.into(), $value)
+                &Match::new($field.into(), $value)
             )
         }
     };
@@ -49,7 +49,6 @@ macro_rules! match_clause {
             LeafClause::Match(
                 Match::new($field.into(), $value)
                 $(.$k($v))*
-                .clone()
             )
         }
     };
@@ -76,6 +75,32 @@ macro_rules! range_clause {
             LeafClause::Range(
                 Range::new($field.into())
                 $(.$key($value))*
+            )
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! term_clause {
+    ($field:expr, $value:expr) => {
+        {
+            use $crate::leaf_clause::LeafClause;
+            use $crate::query::term::Term;
+
+            LeafClause::Term(
+                &Term::new($field.into(), $value)
+            )
+        }
+    };
+
+    ($field:expr, $value:expr $(, $k:ident = $v:expr)*) => {
+        {
+            use $crate::leaf_clause::LeafClause;
+            use $crate::query::range::Range;
+
+            LeafClause::Range(
+                Range::new($field.into(), $value)
+                $(.$k($v))*
             )
         }
     };
@@ -133,4 +158,3 @@ macro_rules! sort_clause {
         }
     };
 }
-

@@ -2,6 +2,8 @@ pub mod bool;
 pub mod exists;
 pub mod r#match;
 pub mod range;
+pub mod term;
+
 use serde::{Serialize, Serializer};
 use bool::Bool;
 use serde_with::skip_serializing_none;

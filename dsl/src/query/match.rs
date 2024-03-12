@@ -9,7 +9,6 @@ use crate::{
 
 use super::QueryValue;
 
-#[derive(Clone)]
 pub struct Match<'a> {
     field: Field<'a>,
     inner: Inner<'a>,
@@ -104,7 +103,7 @@ impl<'a> Serialize for Match<'a> {
     }
 }
 
-#[derive(Clone, Serialize)]
+#[derive(Serialize)]
 struct Inner<'a> {
     query: QueryValue,
     #[serde(flatten, skip_serializing_if = "MatchOptions::equals_to_default")]
@@ -112,7 +111,7 @@ struct Inner<'a> {
 }
 
 #[skip_serializing_none]
-#[derive(Clone, PartialEq, Serialize)]
+#[derive(PartialEq, Serialize)]
 struct MatchOptions<'a> {
     analyzer: Option<Cow<'a, str>>,
     #[serde(skip_serializing_if = "AutoGenerateSynonymsPhraseQuery::equals_to_default")]
@@ -154,7 +153,7 @@ impl<'a> Default for MatchOptions<'a> {
 
 impl<'a> EqualsToDefault for MatchOptions<'a> {}
 
-#[derive(Clone, PartialEq, Serialize)]
+#[derive(PartialEq, Serialize)]
 struct AutoGenerateSynonymsPhraseQuery(bool);
 
 impl Default for AutoGenerateSynonymsPhraseQuery {
@@ -165,7 +164,7 @@ impl Default for AutoGenerateSynonymsPhraseQuery {
 
 impl EqualsToDefault for AutoGenerateSynonymsPhraseQuery {}
 
-#[derive(Clone, PartialEq, Serialize)]
+#[derive(PartialEq, Serialize)]
 struct MaxExpansions(i32);
 
 impl Default for MaxExpansions {
@@ -176,7 +175,7 @@ impl Default for MaxExpansions {
 
 impl EqualsToDefault for MaxExpansions {}
 
-#[derive(Clone, PartialEq, Serialize)]
+#[derive(PartialEq, Serialize)]
 struct PrefixLength(i32);
 
 impl Default for PrefixLength {
@@ -187,7 +186,7 @@ impl Default for PrefixLength {
 
 impl EqualsToDefault for PrefixLength {}
 
-#[derive(Clone, PartialEq, Serialize)]
+#[derive(PartialEq, Serialize)]
 struct FuzzyTranspositions(bool);
 
 impl Default for FuzzyTranspositions {
@@ -198,7 +197,7 @@ impl Default for FuzzyTranspositions {
 
 impl EqualsToDefault for FuzzyTranspositions {}
 
-#[derive(Clone, PartialEq, Serialize)]
+#[derive(PartialEq, Serialize)]
 struct Lenient(bool);
 
 impl Default for Lenient {
@@ -210,7 +209,7 @@ impl Default for Lenient {
 impl EqualsToDefault for Lenient {}
 
 #[allow(dead_code)]
-#[derive(Clone, DisplayCase, PartialEq, SerializeDisplay)]
+#[derive(DisplayCase, PartialEq, SerializeDisplay)]
 #[display_case(case = "uppercase")]
 pub enum Operator {
     And,
@@ -226,7 +225,7 @@ impl Default for Operator {
 impl EqualsToDefault for Operator {}
 
 #[allow(dead_code)]
-#[derive(Clone, DisplayCase, PartialEq, SerializeDisplay)]
+#[derive(DisplayCase, PartialEq, SerializeDisplay)]
 #[display_case(case = "lowercase")]
 pub enum ZeroTermsQuery {
     All,
