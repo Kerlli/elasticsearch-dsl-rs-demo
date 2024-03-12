@@ -75,7 +75,7 @@ impl<'a> Match<'a> {
     }
 
     pub fn operator(&mut self, v: Operator) -> &mut Self {
-        self.inner.opts.operator = Some(v);
+        self.inner.opts.operator = v;
 
         self
     }
@@ -87,7 +87,7 @@ impl<'a> Match<'a> {
     }
 
     pub fn zero_terms_query(&mut self, v: ZeroTermsQuery) -> &mut Self {
-        self.inner.opts.zero_terms_query = Some(v);
+        self.inner.opts.zero_terms_query = v;
 
         self
     }
@@ -127,9 +127,11 @@ struct MatchOptions<'a> {
     fuzzy_rewrite: Option<Cow<'a, str>>,
     #[serde(skip_serializing_if = "Lenient::equals_to_default")]
     lenient: Lenient,
-    operator: Option<Operator>,
+    #[serde(skip_serializing_if = "Operator::equals_to_default")]
+    operator: Operator,
     minimum_should_match: Option<Cow<'a, str>>,
-    zero_terms_query: Option<ZeroTermsQuery>,
+    #[serde(skip_serializing_if = "ZeroTermsQuery::equals_to_default")]
+    zero_terms_query: ZeroTermsQuery,
 }
 
 impl<'a> Default for MatchOptions<'a> {
@@ -143,9 +145,9 @@ impl<'a> Default for MatchOptions<'a> {
             fuzzy_transpositions: Default::default(),
             fuzzy_rewrite: None,
             lenient: Default::default(),
-            operator: None,
+            operator: Default::default(),
             minimum_should_match: None,
-            zero_terms_query: None,
+            zero_terms_query: Default::default(),
         }
     }
 }
@@ -221,6 +223,8 @@ impl Default for Operator {
     }
 }
 
+impl EqualsToDefault for Operator {}
+
 #[allow(dead_code)]
 #[derive(Clone, DisplayCase, PartialEq, SerializeDisplay)]
 #[display_case(case = "lowercase")]
@@ -234,4 +238,6 @@ impl Default for ZeroTermsQuery {
         Self::None
     }
 }
+
+impl EqualsToDefault for ZeroTermsQuery {}
 
