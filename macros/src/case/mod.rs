@@ -1,11 +1,12 @@
 mod cvt;
+pub(crate) mod parse;
 
 use std::error::Error;
 use std::fmt::{self, Display};
 use std::str::FromStr;
 use cvt::snakecase;
 
-pub(crate) enum Case {
+pub enum Case {
     Lowercase,
     Uppercase,
     Snakecase,
@@ -22,7 +23,7 @@ impl Case {
 }
 
 #[derive(Debug, PartialEq, Eq)]
-pub(crate) enum ParseCaseError {
+pub enum ParseCaseError {
     UnknownCase,
 }
 
