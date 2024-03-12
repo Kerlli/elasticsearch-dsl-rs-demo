@@ -14,12 +14,11 @@ use dsl::{
     match_clause,
     query::{
         bool::Bool,
-        r#match::Match,
         range::RangeValue,
         Query,
         QueryValue
     },
-    range,
+    range_clause,
     search::Search,
     sort::Order,
     sort_clause,
@@ -60,11 +59,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         Bool::new()
                             .must(
                                 match_clause!(
-                                    "event.action", QueryValue::Text("logged-in".to_owned())
+                                    "event.action",
+                                    QueryValue::Text("logged-in".to_owned())
                                 )
                             )
                             .filter(
-                                range!(
+                                range_clause!(
                                     "@timestamp",
                                     gte = RangeValue::Date("now-1h/H".to_owned()),
                                     lte = RangeValue::Date("now/H".to_owned()),

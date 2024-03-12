@@ -29,6 +29,7 @@ impl<'a> Query<'a> {
 }
 
 #[allow(dead_code)]
+#[derive(Clone)]
 pub enum QueryValue {
     Text(String),
     Number(Number),

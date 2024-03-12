@@ -2,7 +2,7 @@ use std::fmt::{self, Debug, Display};
 use serde::{Serialize, Serializer};
 
 #[allow(dead_code)]
-#[derive(PartialEq)]
+#[derive(Clone, PartialEq)]
 pub enum Number {
     // Int
     I8(i8),

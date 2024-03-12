@@ -166,33 +166,3 @@ impl Serialize for Boost {
         serializer.serialize_f32(self.0)
     }
 }
-
-#[macro_export]
-macro_rules! range {
-    ($field:expr) => {
-        {
-            use $crate::query::{
-                LeafClause,
-                range::Range,
-            };
-
-            LeafClause::Range(
-                &Range::new($field.into())
-            )
-        }
-    };
-
-    ($field:expr $(, $key:ident = $value:expr)*) => {
-        {
-            use $crate::query::{
-                LeafClause,
-                range::Range,
-            };
-
-            LeafClause::Range(
-                Range::new($field.into())
-                $(.$key($value))*
-            )
-        }
-    };
-}

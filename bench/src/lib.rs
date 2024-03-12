@@ -3,13 +3,12 @@ use dsl::{
     search::Search,
     query::{
         bool::Bool,
-        r#match::Match,
         Query,
         QueryValue,
         range::RangeValue,
     },
     match_clause,
-    range,
+    range_clause,
     sort_clause,
     sort,
 };
@@ -28,7 +27,7 @@ pub fn benchtest(n: usize) {
                                 )
                             )
                             .filter(
-                                range!(
+                                range_clause!(
                                     "@timestamp",
                                     gte = RangeValue::Date("now-1h/H".to_owned()),
                                     lte = RangeValue::Date("now/H".to_owned()),
