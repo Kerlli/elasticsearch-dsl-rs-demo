@@ -13,10 +13,7 @@ macro_rules! declare_bool {
         impl<'a> Bool<'a> {
             pub fn new() -> Self {
                 Self {
-                    must: None,
-                    filter: None,
-                    should: None,
-                    must_not: None,
+                    $($field: None,)*
                 }
             }
 
