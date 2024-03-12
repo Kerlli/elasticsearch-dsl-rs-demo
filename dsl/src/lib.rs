@@ -1,3 +1,4 @@
+pub mod boost;
 pub mod field;
 pub mod leaf_clause;
 pub mod query;

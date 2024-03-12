@@ -3,6 +3,7 @@ use serde::{Serialize, Serializer, ser::SerializeMap};
 use serde_with::{skip_serializing_none, SerializeDisplay};
 use macros::DisplayCase;
 use crate::{
+    boost::Boost,
     field::Field,
     types::{
         number::Number,
@@ -147,23 +148,3 @@ impl Default for Relation {
 }
 
 impl EqualsToDefault for Relation {}
-
-#[derive(PartialEq)]
-struct Boost(f32);
-
-impl Default for Boost {
-    fn default() -> Self {
-        Self(1.0)
-    }
-}
-
-impl EqualsToDefault for Boost {}
-
-impl Serialize for Boost {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer
-    {
-        serializer.serialize_f32(self.0)
-    }
-}
