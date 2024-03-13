@@ -56,7 +56,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .build();
 
     // search body
-    println!("{}", search);
+    dbg!("{}", &search);
 
     let r = client
         .search(elasticsearch::SearchParts::Index(&["my_index"]))
