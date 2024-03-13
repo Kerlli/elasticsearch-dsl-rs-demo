@@ -32,8 +32,10 @@
 macro_rules! match_clause {
     ($field:expr, $value:expr) => {
         {
-            use $crate::leaf_clause::LeafClause;
-            use $crate::query::r#match::Match;
+            use $crate::query::{
+                LeafClause,
+                r#match::Match,
+            };
 
             LeafClause::Match(
                 &Match::new($field.into(), $value)
@@ -43,8 +45,10 @@ macro_rules! match_clause {
 
     ($field:expr, $value:expr $(, $k:ident = $v:expr)*) => {
         {
-            use $crate::leaf_clause::LeafClause;
-            use $crate::query::r#match::Match;
+            use $crate::query::{
+                LeafClause,
+                r#match::Match,
+            };
     
             LeafClause::Match(
                 Match::new($field.into(), $value)
@@ -58,8 +62,10 @@ macro_rules! match_clause {
 macro_rules! range_clause {
     ($field:expr) => {
         {
-            use $crate::leaf_clause::LeafClause;
-            use $crate::query::range::Range;
+            use $crate::query::{
+                LeafClause,
+                range::Range,
+            };
 
             LeafClause::Range(
                 &Range::new($field.into())
@@ -69,8 +75,10 @@ macro_rules! range_clause {
 
     ($field:expr $(, $key:ident = $value:expr)*) => {
         {
-            use $crate::leaf_clause::LeafClause;
-            use $crate::query::range::Range;
+            use $crate::query::{
+                LeafClause,
+                range::Range,
+            };
 
             LeafClause::Range(
                 Range::new($field.into())
@@ -84,8 +92,10 @@ macro_rules! range_clause {
 macro_rules! term_clause {
     ($field:expr, $value:expr) => {
         {
-            use $crate::leaf_clause::LeafClause;
-            use $crate::query::term::Term;
+            use $crate::query::{
+                LeafClause,
+                term::Term,
+            };
 
             LeafClause::Term(
                 &Term::new($field.into(), $value)
@@ -95,8 +105,10 @@ macro_rules! term_clause {
 
     ($field:expr, $value:expr $(, $k:ident = $v:expr)*) => {
         {
-            use $crate::leaf_clause::LeafClause;
-            use $crate::query::range::Range;
+            use $crate::query::{
+                LeafClause,
+                term::Term,
+            };
 
             LeafClause::Range(
                 Range::new($field.into(), $value)

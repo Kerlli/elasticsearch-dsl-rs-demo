@@ -6,6 +6,10 @@ pub mod term;
 
 use serde::{Serialize, Serializer};
 use bool::Bool;
+use exists::Exists;
+use r#match::Match;
+use term::Term;
+use range::Range;
 use serde_with::skip_serializing_none;
 use crate::types::number::Number;
 
@@ -50,6 +54,23 @@ impl Serialize for QueryValue {
         }
     }
 }
+
+macro_rules! declare_leaf_clause {
+    ($($clause_name:ident),*) => {
+        #[derive(Serialize)]
+        #[serde(rename_all = "snake_case")]
+        pub enum LeafClause<'a> {
+            $($clause_name(&'a $clause_name<'a>),)*
+        }
+    };
+}
+
+declare_leaf_clause!(
+    Exists,
+    Match,
+    Term,
+    Range
+);
 
 
 

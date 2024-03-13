@@ -1,6 +1,6 @@
-use crate::leaf_clause::LeafClause;
 use serde::Serialize;
 use serde_with::skip_serializing_none;
+use super::LeafClause;
 
 macro_rules! declare_bool {
     ($($field:ident),*) => {
@@ -34,7 +34,3 @@ macro_rules! declare_bool {
 }
 
 declare_bool!(must, filter, should, must_not);
-
-
-
-
