@@ -3,36 +3,47 @@ pub mod exists;
 pub mod r#match;
 pub mod match_all;
 pub mod match_none;
+pub mod nested;
 pub mod range;
 pub mod term;
 pub mod prelude;
 
+use std::rc::Rc;
 use serde::{Serialize, Serializer};
 use bool::Bool;
 use exists::Exists;
 use r#match::Match;
 use match_all::MatchAll;
 use match_none::MatchNone;
+use nested::Nested;
 use term::Term;
 use range::Range;
 use serde_with::skip_serializing_none;
 use crate::types::number::Number;
 
 #[skip_serializing_none]
-#[derive(Serialize)]
+#[derive(Clone, Serialize)]
 pub struct Query<'a> {
     r#bool: Option<&'a Bool<'a>>,
+    nested: Option<Rc<Nested<'a>>>,
 }
 
 impl<'a> Query<'a> {
     pub fn new() -> Self {
         Self {
             r#bool: None,
+            nested: None,
         }
     }
 
     pub fn bool(&mut self, q: &'a Bool) -> &mut Self {
         self.r#bool = Some(q);
+
+        self
+    }
+
+    pub fn nested(&mut self, q: Nested<'a>) -> &mut Self {
+        self.nested = Some(Rc::new(q));
 
         self
     }
