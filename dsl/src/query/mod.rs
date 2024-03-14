@@ -1,6 +1,8 @@
 pub mod bool;
 pub mod exists;
 pub mod r#match;
+pub mod match_all;
+pub mod match_none;
 pub mod range;
 pub mod term;
 pub mod prelude;
@@ -9,6 +11,8 @@ use serde::{Serialize, Serializer};
 use bool::Bool;
 use exists::Exists;
 use r#match::Match;
+use match_all::MatchAll;
+use match_none::MatchNone;
 use term::Term;
 use range::Range;
 use serde_with::skip_serializing_none;
@@ -69,6 +73,8 @@ macro_rules! declare_leaf_clause {
 declare_leaf_clause!(
     Exists,
     Match,
+    MatchAll,
+    MatchNone,
     Term,
     Range
 );

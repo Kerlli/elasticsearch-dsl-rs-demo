@@ -33,6 +33,16 @@
 /// ```
 #[macro_export]
 macro_rules! clause {
+    ($query:ident) => {
+        {
+            use $crate::query::prelude::*;
+
+            LeafClause::$query(
+                &$query::new()
+            )
+        }
+    };
+
     ($query:ident, $field:expr) => {
         {
             use $crate::query::prelude::*;
