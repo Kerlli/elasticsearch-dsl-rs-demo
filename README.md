@@ -11,16 +11,15 @@
 ```rust
 use elasticsearch::cat::CatAliasesParts;
 use dsl::{
-    match_clause,
     query::{
         bool::Bool,
         range::RangeValue,
         Query,
         QueryValue
     },
-    range_clause,
     search::Search,
     sort::Order,
+    clause,
     sort_clause,
     sort,
 };
@@ -34,12 +33,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .bool(
                     Bool::new()
                         .must(
-                            match_clause!(
-                                "event.action", QueryValue::Text("logged-in".to_owned())
+                            clause!(
+                                Match,
+                                "event.action",
+                                QueryValue::Text("logged-in".to_owned())
                             )
                         )
                         .filter(
-                            range_clause!(
+                            clause!(
+                                Range,
                                 "@timestamp",
                                 gte = RangeValue::Date("now-1h/H".to_owned()),
                                 lte = RangeValue::Date("now/H".to_owned()),
