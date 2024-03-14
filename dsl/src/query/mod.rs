@@ -3,6 +3,7 @@ pub mod exists;
 pub mod r#match;
 pub mod range;
 pub mod term;
+pub mod prelude;
 
 use serde::{Serialize, Serializer};
 use bool::Bool;

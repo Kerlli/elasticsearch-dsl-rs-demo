@@ -1,9 +1,11 @@
-/// Create a match clause like Python `**kwargs` function
+/// Create a clause like Python `**kwargs` function
+/// 
+/// Usage: clause!([query_name], [field], [query_value]?, [key = value]*)
 /// 
 /// # Example
 /// ```
 /// use dsl::{
-///     match_clause,
+///     clause,
 ///     query::{
 ///         bool::Bool,
 ///         Query,
@@ -18,7 +20,8 @@
 ///             .bool(
 ///                 Bool::new()
 ///                     .must(
-///                         match_clause!(
+///                         clause!(
+///                             Match,
 ///                             "event.action",
 ///                             QueryValue::Text("logged-in".to_owned()),
 ///                             prefix_length = 3
@@ -29,90 +32,45 @@
 ///     .build();
 /// ```
 #[macro_export]
-macro_rules! match_clause {
-    ($field:expr, $value:expr) => {
+macro_rules! clause {
+    ($query:ident, $field:expr) => {
         {
-            use $crate::query::{
-                LeafClause,
-                r#match::Match,
-            };
+            use $crate::query::prelude::*;
 
-            LeafClause::Match(
-                &Match::new($field.into(), $value)
+            LeafClause::$query(
+                &$query::new($field.into())
             )
         }
     };
 
-    ($field:expr, $value:expr $(, $k:ident = $v:expr)*) => {
+    ($query:ident, $field:expr $(, $key:ident = $value:expr)*) => {
         {
-            use $crate::query::{
-                LeafClause,
-                r#match::Match,
-            };
-    
-            LeafClause::Match(
-                Match::new($field.into(), $value)
-                $(.$k($v))*
-            )
-        }
-    };
-}
+            use $crate::query::prelude::*;
 
-#[macro_export]
-macro_rules! range_clause {
-    ($field:expr) => {
-        {
-            use $crate::query::{
-                LeafClause,
-                range::Range,
-            };
-
-            LeafClause::Range(
-                &Range::new($field.into())
-            )
-        }
-    };
-
-    ($field:expr $(, $key:ident = $value:expr)*) => {
-        {
-            use $crate::query::{
-                LeafClause,
-                range::Range,
-            };
-
-            LeafClause::Range(
-                Range::new($field.into())
+            LeafClause::$query(
+                &$query::new($field.into())
                 $(.$key($value))*
             )
         }
     };
-}
 
-#[macro_export]
-macro_rules! term_clause {
-    ($field:expr, $value:expr) => {
+    ($query:ident, $field:expr, $query_value:expr) => {
         {
-            use $crate::query::{
-                LeafClause,
-                term::Term,
-            };
+            use $crate::query::prelude::*;
 
-            LeafClause::Term(
-                &Term::new($field.into(), $value)
+            LeafClause::$query(
+                &$query::new($field.into(), $query_value)
             )
         }
     };
 
-    ($field:expr, $value:expr $(, $k:ident = $v:expr)*) => {
+    ($query:ident, $field:expr, $query_value:expr $(, $key:ident = $value:expr)*) => {
         {
-            use $crate::query::{
-                LeafClause,
-                term::Term,
-            };
+            use $crate::query::prelude::*;
 
-            LeafClause::Range(
-                Range::new($field.into(), $value)
-                $(.$k($v))*
+            LeafClause::$query(
+                &$query::new($field.into(), $query_value)
+                $(.$key($value))*
             )
         }
     };

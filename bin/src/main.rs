@@ -8,14 +8,13 @@ use elasticsearch::{
 use serde::Deserialize;
 use serde_json::Value;
 use dsl::{
-    match_clause,
+    clause,
     query::{
         bool::Bool,
         range::RangeValue,
         Query,
         QueryValue
     },
-    range_clause,
     search::Search,
     sort::Order,
     sort_clause,
@@ -56,13 +55,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .bool(
                     Bool::new()
                         .must(
-                            match_clause!(
+                            clause!(
+                                Match,
                                 "event.action",
                                 QueryValue::Text("logged-in".to_owned())
                             )
                         )
                         .filter(
-                            range_clause!(
+                            clause!(
+                                Range,
                                 "@timestamp",
                                 gte = RangeValue::Date("now-1h/H".to_owned()),
                                 lte = RangeValue::Date("now/H".to_owned()),
