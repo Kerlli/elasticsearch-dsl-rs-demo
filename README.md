@@ -11,6 +11,7 @@
 ```rust
 use elasticsearch::cat::CatAliasesParts;
 use dsl::{
+    clause,
     query::{
         bool::Bool,
         range::RangeValue,
@@ -18,10 +19,13 @@ use dsl::{
         QueryValue
     },
     search::Search,
-    sort::Order,
-    clause,
+    sort::{
+        nested::SortNested,
+        Order,
+        Sort
+    },
     sort_clause,
-    sort,
+    types::number::Number,
 };
 use serde_json::Value;
 
@@ -51,9 +55,22 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 )
         )
         .sort(
-            sort!(
-                sort_clause!("@timestamp", order = Order::Desc)
-            )
+            Sort::new()
+                .sort(
+                    sort_clause!(
+                        "@timestamp",
+                        order = Order::Desc,
+                        nested = SortNested::new("parent")
+                            .filter(
+                                clause!(
+                                    Range,
+                                    "parent.age",
+                                    gte = RangeValue::Number(Number::I32(21))
+                                )
+                            )
+                            .clone()
+                    )
+                )
         )
         .build();
 
