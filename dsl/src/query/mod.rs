@@ -73,7 +73,7 @@ impl Serialize for QueryValue {
 
 macro_rules! declare_leaf_clause {
     ($($clause_name:ident),*) => {
-        #[derive(Serialize)]
+        #[derive(Clone, Serialize)]
         #[serde(rename_all = "snake_case")]
         pub enum LeafClause<'a> {
             $($clause_name(&'a $clause_name<'a>),)*

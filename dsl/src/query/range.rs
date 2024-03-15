@@ -11,6 +11,7 @@ use crate::{
     },
 };
 
+#[derive(Clone)]
 pub struct Range<'a> {
     field: Field<'a>,
     opts: RangeOptions<'a>,
@@ -85,7 +86,7 @@ impl<'a> Range<'a> {
 }
 
 #[skip_serializing_none]
-#[derive(Serialize)]
+#[derive(Clone, Serialize)]
 struct RangeOptions<'a> {
     gt: Option<RangeValue>,
     gte: Option<RangeValue>,
@@ -115,6 +116,7 @@ impl<'a> Default for RangeOptions<'a> {
 }
 
 #[allow(dead_code)]
+#[derive(Clone)]
 pub enum RangeValue {
     Number(Number),
     Date(String),
@@ -133,7 +135,7 @@ impl Serialize for RangeValue {
 }
 
 #[allow(dead_code)]
-#[derive(Debug, DisplayCase, SerializeDisplay, PartialEq)]
+#[derive(Clone, Debug, DisplayCase, SerializeDisplay, PartialEq)]
 #[display_case(case = "uppercase")]
 pub enum Relation {
     Intersects,

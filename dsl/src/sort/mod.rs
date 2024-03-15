@@ -1,12 +1,50 @@
+pub mod nested;
+
 use std::borrow::Cow;
 use serde::{
     Serialize,
     Serializer,
-    ser::SerializeMap,
+    ser::{
+        SerializeMap,
+        SerializeSeq,
+    },
 };
 use serde_with::{SerializeDisplay, skip_serializing_none};
 use macros::DisplayCase;
+use nested::SortNested;
 use crate::field::Field;
+
+#[derive(Clone)]
+pub struct Sort<'a> {
+    clauses: Vec<&'a SortClause<'a>>,
+}
+
+impl<'a> Sort<'a> {
+    pub fn new() -> Self {
+        Self {
+            clauses: vec![],
+        }
+    }
+
+    pub fn sort(&mut self, sort_clause: &'a SortClause<'a>) -> &mut Self {
+        self.clauses.push(sort_clause);
+
+        self
+    }
+}
+
+impl<'a> Serialize for Sort<'a> {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer
+    {
+        let mut seq = serializer.serialize_seq(Some(self.clauses.len()))?;
+        for clause in &self.clauses {
+            seq.serialize_element(&clause)?;
+        }
+        seq.end()
+    }
+}
 
 #[derive(Clone)]
 pub struct SortClause<'a> {
@@ -45,6 +83,12 @@ impl<'a> SortClause<'a> {
 
         self
     }
+
+    pub fn nested(&mut self, nested: SortNested<'a>) -> &mut Self {
+        self.opts.nested = Some(nested.clone());
+
+        self
+    }
 }
 
 impl<'a> Serialize for SortClause<'a> {
@@ -65,7 +109,7 @@ struct SortOptions<'a> {
     order: Option<Order>,
     mode: Option<Mode>,
     numberic_type: Option<NumbericType>,
-    // nested,
+    nested: Option<SortNested<'a>>,
 }
 
 impl<'a> Default for SortOptions<'a> {
@@ -75,6 +119,7 @@ impl<'a> Default for SortOptions<'a> {
             order: None,
             mode: None,
             numberic_type: None,
+            nested: None,
         }
     }
 }

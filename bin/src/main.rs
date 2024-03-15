@@ -16,9 +16,13 @@ use dsl::{
         QueryValue
     },
     search::Search,
-    sort::Order,
+    sort::{
+        nested::SortNested,
+        Order,
+        Sort
+    },
     sort_clause,
-    sort,
+    types::number::Number,
 };
 
 #[tokio::main]
@@ -73,9 +77,22 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 )
         )
         .sort(
-            sort!(
-                sort_clause!("@timestamp", order = Order::Desc)
-            )
+            Sort::new()
+                .sort(
+                    sort_clause!(
+                        "@timestamp",
+                        order = Order::Desc,
+                        nested = SortNested::new("parent")
+                            .filter(
+                                clause!(
+                                    Range,
+                                    "parent.age",
+                                    gte = RangeValue::Number(Number::I32(21))
+                                )
+                            )
+                            .clone()
+                    )
+                )
         )
         .build();
 

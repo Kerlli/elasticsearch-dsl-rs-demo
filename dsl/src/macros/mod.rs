@@ -86,23 +86,6 @@ macro_rules! clause {
     };
 }
 
-#[macro_export]
-macro_rules! sort {
-    ($($clause:expr),*) => {
-        {
-            use $crate::sort::SortClause;
-
-            let mut clauses: Vec<SortClause> = vec![];
-
-            $(
-                clauses.push($clause.clone());
-            )*
-
-            clauses
-        }
-    };
-}
-
 /// Create a sort clause like Python `**kwargs` function
 /// 
 /// # Example

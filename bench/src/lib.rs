@@ -1,15 +1,17 @@
 use dsl::{
-    sort::Order,
-    search::Search,
+    clause,
     query::{
         bool::Bool,
+        range::RangeValue,
         Query,
         QueryValue,
-        range::RangeValue,
     },
-    clause,
+    search::Search,
+    sort::{
+        Order,
+        Sort,
+    },
     sort_clause,
-    sort,
 };
 
 pub fn benchtest(n: usize) {
@@ -39,9 +41,10 @@ pub fn benchtest(n: usize) {
                     )
             )
             .sort(
-                sort!(
-                    sort_clause!("@timestamp", order = Order::Desc)
-                )
+                Sort::new()
+                    .sort(
+                        sort_clause!("@timestamp", order = Order::Desc)
+                    )
             )
             .build();
         }
