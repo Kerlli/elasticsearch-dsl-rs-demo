@@ -4,6 +4,7 @@ use serde::{
     Serializer,
     ser::SerializeMap,
 };
+use serde_with::skip_serializing_none;
 use crate::{
     boost::Boost,
     case_insensitive::CaseInsensitive,
@@ -11,25 +12,28 @@ use crate::{
     types::EqualsToDefault,
 };
 
-pub struct Term<'a> {
+#[derive(Clone)]
+pub struct Wildcard<'a> {
     field: Field<'a>,
-    opts: TermOptions<'a>,
+    opts: WildcardOptions<'a>,
 }
 
-impl<'a> Term<'a> {
-    pub fn new(field: Field<'a>, value: &'a str) -> Self {
+impl<'a> Wildcard<'a> {
+    pub fn new(field: &'a str, value: &'a str, wildcard: &'a str) -> Self {
         Self {
-            field,
-            opts: TermOptions {
-                value: value.into(),
+            field: field.into(),
+            opts: WildcardOptions {
                 boost: Default::default(),
                 case_insensitive: Default::default(),
+                rewrite: None,
+                value: value.into(),
+                wildcard: wildcard.into(),
             }
         }
     }
 
-    pub fn boost(&mut self, v: f32) -> &mut Self {
-        self.opts.boost = Boost(v);
+    pub fn boost(&mut self, boost: f32) -> &mut Self {
+        self.opts.boost = Boost(boost);
 
         self
     }
@@ -39,9 +43,15 @@ impl<'a> Term<'a> {
 
         self
     }
+
+    pub fn rewrite(&mut self, v: &'a str) -> &mut Self {
+        self.opts.rewrite = Some(v.into());
+
+        self
+    }
 }
 
-impl<'a> Serialize for Term<'a> {
+impl<'a> Serialize for Wildcard<'a> {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer
@@ -52,11 +62,14 @@ impl<'a> Serialize for Term<'a> {
     }
 }
 
-#[derive(Serialize)]
-pub struct TermOptions<'a> {
-    value: Cow<'a, str>,
+#[skip_serializing_none]
+#[derive(Clone, Serialize)]
+struct WildcardOptions<'a> {
     #[serde(skip_serializing_if = "Boost::equals_to_default")]
     boost: Boost,
     #[serde(skip_serializing_if = "CaseInsensitive::equals_to_default")]
     case_insensitive: CaseInsensitive,
+    rewrite: Option<Cow<'a, str>>,
+    value: Cow<'a, str>,
+    wildcard: Cow<'a, str>,
 }

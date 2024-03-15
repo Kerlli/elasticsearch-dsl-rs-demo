@@ -1,6 +1,6 @@
 pub mod number;
 
-pub trait EqualsToDefault
+pub(crate) trait EqualsToDefault
 where
     Self: Default + PartialEq,
 {

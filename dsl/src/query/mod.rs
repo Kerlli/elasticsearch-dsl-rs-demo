@@ -7,6 +7,7 @@ pub mod nested;
 pub mod range;
 pub mod term;
 pub mod prelude;
+pub mod wildcard;
 
 use std::rc::Rc;
 use serde::{Serialize, Serializer};
@@ -19,6 +20,7 @@ use nested::Nested;
 use term::Term;
 use range::Range;
 use serde_with::skip_serializing_none;
+use wildcard::Wildcard;
 use crate::types::number::Number;
 
 #[skip_serializing_none]
@@ -26,6 +28,7 @@ use crate::types::number::Number;
 pub struct Query<'a> {
     r#bool: Option<&'a Bool<'a>>,
     nested: Option<Rc<Nested<'a>>>,
+    wildcard: Option<&'a Wildcard<'a>>,
 }
 
 impl<'a> Query<'a> {
@@ -33,6 +36,7 @@ impl<'a> Query<'a> {
         Self {
             r#bool: None,
             nested: None,
+            wildcard: None,
         }
     }
 
@@ -44,6 +48,12 @@ impl<'a> Query<'a> {
 
     pub fn nested(&mut self, q: Nested<'a>) -> &mut Self {
         self.nested = Some(Rc::new(q));
+
+        self
+    }
+
+    pub fn wildcard(&mut self, q: &'a Wildcard<'a>) -> &mut Self {
+        self.wildcard = Some(q);
 
         self
     }

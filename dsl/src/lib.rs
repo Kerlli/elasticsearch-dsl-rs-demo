@@ -1,12 +1,11 @@
-pub mod boost;
-pub mod field;
+pub(crate) mod boost;
+pub(crate) mod case_insensitive;
+pub(crate) mod field;
 pub mod query;
 pub mod sort;
 pub mod types;
 pub mod search;
-pub mod shortcuts;
+pub(crate) mod shortcuts;
 
 mod macros;
 mod tests;
-
-pub use self::macros::*;
